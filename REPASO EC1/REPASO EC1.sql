@@ -1,6 +1,254 @@
+--S1------------------------------------------------
+----------------------------------------------------
+----------------------------------------------------
+
+CREATE USER DESARROLLO IDENTIFIED BY CIBERTEC 
+DEFAULT TABLESPACE USERS 
+TEMPORARY TABLESPACE TEMP 
+PROFILE DEFAULT;
+
+GRANT CONNECT, RESOURCE TO DESARROLLO;
+GRANT CREATE ANY TABLE TO DESARROLLO; 
+ALTER USER DESARROLLO ACCOUNT UNLOCK;
+
+--S2------------------------------------------------
+----------------------------------------------------
+----------------------------------------------------
+-- Ejemplo 1: Compuesta de una columna y sin indicar el nombre explícitamente.
+CREATE TABLE PRODUCTO(
+COD_PRO CHAR(4) not null PRIMARY KEY,
+DESCRIP_PRO VARCHAR2(40) NOT NULL,
+PRECIO_PRO NUMBER(8,2) NOT NULL,
+STOCK_ACT_PRO NUMBER(8) NOT NULL,
+STOCK_MIN_PRO NUMBER(8) NOT NULL
+)
+
+Eliminar la tabla:
+DROP TABLE PRODUCTO
+-- Ejemplo 2: Compuesta de una columna e indicando el nombre explícitamente.
+CREATE TABLE PRODUCTO(
+COD_PRO CHAR(4) not null CONSTRAINTS PK_CODPRO PRIMARY KEY,
+DESCRIP_PRO VARCHAR2(40) NOT NULL,
+PRECIO_PRO NUMBER(8,2) NOT NULL,
+STOCK_ACT_PRO NUMBER(8) NOT NULL,
+STOCK_MIN_PRO NUMBER(8) NOT NULL
+)
+Creando llaves foráneas
+EJEMPLO: Con nombre explícito
+CREATE TABLE DISTRITO(
+COD_DIST CHAR (3) NOT NULL CONSTRAINT PK_CODDIST PRIMARY KEY,
+DESCRIP_DIST VARCHAR(50)
+)
+CREATE TABLE CLIENTE(
+COD_CLI CHAR (6) NOT NULL CONSTRAINT CODCLI PRIMARY KEY,
+NOMBRES VARCHAR (50) NOT NULL,
+APE_PATER_CLI VARCHAR (50) NOT NULL,
+APE_MATER_CLI VARCHAR (50) NOT NULL,
+DIRECCION_CLI VARCHAR (50) NULL,
+TELEFONO_CLI CHAR (7) NULL,
+COD_DIST CHAR (3) NOT NULL,
+CONSTRAINT FK_CLIENTE_DISTRITO FOREIGN KEY (COD_DIST) REFERENCES DISTRITO(COD_DIST),
+CORREO_E VARCHAR (50) NULL
+)
+Adicionando Columnas
+Crear la tabla EMP
+CREATE TABLE EMP
+(EMPNO NUMBER(4) NOT NULL,
+ENAME VARCHAR2(10),
+JOB VARCHAR2(9),
+MGR NUMBER(4),
+HIREDATE DATE,
+SAL NUMBER(7, 2),
+COMM NUMBER(7, 2),
+DEPTNO NUMBER(2));
+
+Para adicionar una columna a una tabla, utilice el comando 
+ALTER TABLE ….. ADD.
+Por ejemplo, el siguiente comando adiciona una nueva columna llamada Bonus a la tabla EMP: ALTER TABLE EMP ADD BONUS NUMBER(12,2);
+Visualizar la nueva estructura: 
+DESCRIB EMP;
+
+El siguiente ejemplo adiciona más de una columna: 
+ALTER TABLE EMP ADD (DIRECCION VARCHAR2(50),TELEFONO CHAR(9));
+
+Modificar el campo BONUS 
+ALTER TABLE EMP MODIFY BONUS NUMBER(9,2)
+
+Renombrar el nombre del campo BONUS por BONUS_EMP 
+ALTER TABLE EMP RENAME COLUMN BONUS TO BONUS_EMP;
+
+Eliminar el campo TELEFONO. 
+ALTER TABLE EMP DROP COLUMN TELEFONO;
+
+
+--S4------------------------------------------------
+----------------------------------------------------
+----------------------------------------------------
+CREATE INDEX IDX_SEXO ON TB_ALUMNO(SEXALU);
+DROP INDEX IDX_SEXO;
+CREATE INDEX IDX_SEXO ON TB_ALUMNO(SEXALU DESC);
+CREATE INDEX IDX_APENOM ON TB_ALUMNO(APEALU, NOMALU);
+
+
+CREATE TABLE TB_BOLETA(
+NBOL NUMBER(5),
+FBOL DATE,
+CLIENTE VARCHAR2(100),
+MONTO NUMBER(5,2))
+);
+--DEFINIR EL CONSTRAINT DE CLAVE PRIMARIA CUYO NOMBRE SERA
+--PK_TB_BOLETA
+ALTER TABLE TB_BOLETA
+ADD CONSTRAINT PK_TB_BOLETA PRIMARY KEY(NBOL);
+
+CREATE TABLE DETALLE_BOLETA(
+  NBOL NUMBER(5),
+  DESCRIPCION VARCHAR(150),
+  PRECIO NUMBER(5,2)
+);
+
+--CONSTRAINT DE REFERENCIA A TB_BOLETA
+ALTER TABLE DETALLE_BOLETA
+ADD CONSTRAINT FK_TBOLETA_DETALLEBOLETA
+FOREIGN KEY(NBOL) REFERENCES TB_BOLETA
+
+
+----------------------------------------------------
+--VER LOS OBJETOS CREADOS POR EL USUARIO SCOTT
+
+--LISTAR EL NOMBRE DE LAS TABLAS
+SELECT TABLE_NAME FROM ALL_TABLES WHERE OWNER = 'SCOTT';
+
+--PARA LOS ÍNDICES
+SELECT TABLE_NAME, INDEX_NAME FROM ALL_INDEXES
+WHERE OWNER='SCOTT';
+
+--PARA LAS SECUENCIAS
+SELECT SEQUENCE_NAME FROM ALL_SEQUENCES
+WHERE SEQUENCE_OWNER ='SCOTT';
+
+--VISUALIZAR TODAS LAS TABLAS, TABLESPACE Y NROS DE FILAS POR
+-- TABLA DEL USUARIO SCOTT
+SELECT OWNER, TABLE_NAME, TABLESPACE_NAME, NUM_ROWS
+FORM ALL_TABLES WHERE OWNER = 'SCOTT';
+
+--VISUALIZAR TODO EL DICCIONARIO DE DATOS
+SELECT * FROM DICTIONARY;
+
+
+--VER LOS OBJETOS CONECTADO COMO SYSTEM
+
+--PROPIETARIOS Y NÚMERO DE OBJETOS POR PROPIETARIO
+SELECT OWNER, COUNT(OWNER) NUMERO
+FROM DBA_OBJECTS
+GROUP BY OWNER
+ORER BY NUMERO DESC;
+
+
+--VISUALIZAR EL USUARIO, STATUS Y FECHA DE CREACION
+SELECT USERNAME, ACCOUNT_STATUS,CREATED FROM DBA_USERS;
+
+--NÚMERO DE OBJETOS, AGRUPADOS POR USUARIO, STATUS
+SELECT OWNER, STATUS, COUNT(OWNER) NUMERO FROM DBA_OBJECTS
+GROUP BY OWNER, STATUS;
+
+--VISUALIZAR LOS TABLESPACE DE LA BASE DE DATOS
+SELECT TABLESPACE_NAME FROM DBA_TABLESPACES;
+
+--VISUALIZAR LOS ARCHIVOS CONTROL FILE
+SELECT * FROM V$CONTROLFILE;
+
+
+
+--S5------------------------------------------------
+----------------------------------------------------
+----------------------------------------------------
+CONCAT (cad1, cad2)
+SUBSTR(char, m [, n])
+LENGTH(char)
+INSTR(char1, char2)
+LPAD(char1, n [,char2])
+RPAD(char1, n [,char2])
+TRIM(char)
+
+Funciones Numéricas:
+? ROUND: Redondea el valor a los decimales especificados.
+SELECT ROUND(45.926, 2) FROM DUAL; = 45.93
+? TRUNC: Trunca el valor a los decimales especificados.
+SELECT TRUNC(45.926, 2) FROM DUAL; = 45.92
+? MOD: Devuelve el resto de la división.
+SELECT MOD(1600, 300) FROM DUAL; = 100
+? ABS: Calcula el valor absoluto de n.
+SELECT ABS(?16) FROM DUAL; = 16
+? CEIL: Calcula el menor número entero mayor o igual que n.
+SELECT CEIL(16.7) FROM DUAL; = 17
+? FLOOR: Calcula el mayor número entero menor o igual que n.
+SELECT FLOOR(16.7) FROM DUAL; = 16
+? POWER: Devuelve m elevado a la n potencia, n debe ser entero
+SELECT POWER(3,2) FROM DUAL; = 9
+
+
+
+Funciones de Fechas
+
+FUNCIÓN
+MONTHS_BETWEEN
+ADD_MONTHS
+NEXT_DAY
+LAST_DAY
+ROUND
+TRUNC
+
+
+? Cuantos meses existen entre el 11 de Enero del 2011 y el 01 de Septiembre del 2012
+SELECT MONTHS_BETWEEN ('01?SEP?2012','11?ENE?2011') FROM DUAL;
+Resultado: 19,6774193548387
+*Se puede redondear la fecha al igual que las funciones numericas de la siguiente forma
+SELECT ROUND(MONTHS_BETWEEN ('01?SEP?2012','11?ENE?2011'),1) FROM DUAL;
+Resultado: 19,7
+? Aumentar 6 meses al 23 de Abril del 2012
+SELECT ADD_MONTHS ('23?ABR?2012',6) FROM DUAL;
+Resultado: 23/10/2012
+? Qué fecha cae el siguiente viernes después del 21 de Octubre del 2012
+SELECT NEXT_DAY ('21?OCT?2012','VIERNES') FROM DUAL;
+Resultado: 26/10/2012
+? Cuál es la fecha del último día del mes correspondiente a Febrero del 2012
+SELECT LAST_DAY('01?FEB?2012') FROM DUAL;
+Resultado: 29/02/2012
+
+
+
+Conversión Explicita de tipo de datos
+
+YYYY /AÑOS COMPLETO EN NUMEROS
+YEAR / AÑOS EN LETRA
+MM / VALOR DE DOS DIGITOS PARA EL MES
+MONTH / NOMBRE COMPLETO DEL MES
+MON / ABREVIATURA DE TRES LETRAS DEL MES
+DY / ABREVIATURA DE TRES LETRAS DEL DÍA DE LA SEMANA
+DAY / NOMBRE COMPLETO DEL DÍA DE LA SEMANA
+DD / DÍA DEL MES EN NUMEROS
+
+DATE a CHAR (TO_CHAR):
+? Convertir la fecha del día de hoy al formato DD/MM/YYYY HH24:MI:SS
+SELECT TO_CHAR(SYSDATE,'DD/MM/YYYY HH24:MI:SS') FROM DUAL;
+Resultado: 23/10/2012 03:37:39
+CHAR a DATE (TO_DATE):
+? Convertir la cadena 23/10/2012 al formato fecha para realizar operaciones tipo fecha
+SELECT TO_DATE('23/10/2012','DD/MM/YYYY') FROM DUAL;
+Resultado: 23/10/2012 ??(tipo de dato date)
+CHAR a NUMBER (TO_NUMBER):
+? Convertir el texto '1567,7' a formato numérico para realizar operaciones matemáticas
+SELECT TO_NUMBER('1567,7') FROM DUAL;
+Resultado: 1567,7 ??(tipo de dato number)
+
+--EC1-----------------------------------------------
+----------------------------------------------------
+----------------------------------------------------
+
 --PREGUNTA 1
 SELECT * FROM DICTIONARY;
-SELECT * FROM ALL_TABLES;
+SELECT * FROM DBA_OBJECTS;
 
 SELECT OWNER, ACCOUNT_STATUS, COUNT(OWNER) AS CANT_OBJS, CREATED AS ULT_FECHA 
 FROM DBA_OBJECTS
