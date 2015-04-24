@@ -1,0 +1,168 @@
+LABORATORIO NR02
+- cmd
+- sqlplus
+
+usu: system
+pas: redes
+
+----------------QUE USUARIO ESTOY?--------------
+SQL> show user;
+USER es "SYSTEM"
+
+-----------------SELECCIONAR TODAS LAS TABLAS Y VISTAS DEL USUARIO------------------
+SQL> SELECT * FROM TAB;
+
+-----------------CAMBIAR CONTRASEÑA------------
+SQL> ALTER USER SYSTEM IDENTIFIED BY oracle;
+
+Usuario modificado.
+
+----------------PARA CONECTAR------------
+SQL> CONNEC
+Introduzca el nombre de usuario: SYSTEM
+Introduzca la contrase±a:
+Conectado.
+SQL>
+
+---------------PARA DESCONECTARNOS----------
+SQL> DISCONNEC
+Desconectado de Oracle Database 10g Express Edition Release 10.2.0.1.0 - Product
+ion
+
+-------------CUANDO LA CUENTA ESTA BLOQUEADA------------
+SQL> CONNEC
+Introduzca el nombre de usuario: HR
+Introduzca la contrase±a:
+ERROR:
+ORA-28000: the account is locked
+
+------------LOGUEARSE CON EL USUARIO SYSTEM---------
+SQL> CONNECT SYSTEM/SYSTEM;
+CONECTADO.
+
+SQL> ALTER USER HR ACCOUNT UNLOCK;
+
+Usuario modificado.
+
+SQL> ALTER USER HR IDENTIFIED BY HR;
+
+Usuario modificado.
+
+SQL> CONNECT HR/HR;
+CONECTADO.
+
+-----------------LIMPIAR PANTALLA------------
+SQL> CLEAR SCREEN;
+
+-----------------DESCRIBIR LAS TABLAS--------------
+SQL> DESC DEPARTMENTS;
+ Nombre                                    +Nulo?   Tipo
+ ----------------------------------------- -------- ----------------------------
+
+ DEPARTMENT_ID                             NOT NULL NUMBER(4)
+ DEPARTMENT_NAME                           NOT NULL VARCHAR2(30)
+ MANAGER_ID                                         NUMBER(6)
+ LOCATION_ID                                        NUMBER(4)
+
+SQL> DESC EMPLOYEES;
+ Nombre                                    +Nulo?   Tipo
+ ----------------------------------------- -------- ----------------------------
+
+ EMPLOYEE_ID                               NOT NULL NUMBER(6)
+ FIRST_NAME                                         VARCHAR2(20)
+ LAST_NAME                                 NOT NULL VARCHAR2(25)
+ EMAIL                                     NOT NULL VARCHAR2(25)
+ PHONE_NUMBER                                       VARCHAR2(20)
+ HIRE_DATE                                 NOT NULL DATE
+ JOB_ID                                    NOT NULL VARCHAR2(10)
+ SALARY                                             NUMBER(8,2)
+ COMMISSION_PCT                                     NUMBER(2,2)
+ MANAGER_ID                                         NUMBER(6)
+ DEPARTMENT_ID                                      NUMBER(4)
+
+SQL>
+
+
+-----------------SETEANDO LAS PAGINAS---------------
+SQL> SELECT * FROM DEPARTMENTS;
+
+DEPARTMENT_ID DEPARTMENT_NAME                MANAGER_ID LOCATION_ID
+------------- ------------------------------ ---------- -----------
+           10 Administration                        200        1700
+           20 Marketing                             201        1800
+           30 Purchasing                            114        1700
+           40 Human Resources                       203        2400
+           50 Shipping                              121        1500
+           60 IT                                    103        1400
+           70 Public Relations                      204        2700
+           80 Sales                                 145        2500
+           90 Executive                             100        1700
+          100 Finance                               108        1700
+          110 Accounting                            205        1700
+
+DEPARTMENT_ID DEPARTMENT_NAME                MANAGER_ID LOCATION_ID
+------------- ------------------------------ ---------- -----------
+          120 Treasury                                         1700
+          130 Corporate Tax                                    1700
+          140 Control And Credit                               1700
+          150 Shareholder Services                             1700
+          160 Benefits                                         1700
+          170 Manufacturing                                    1700
+          180 Construction                                     1700
+          190 Contracting                                      1700
+          200 Operations                                       1700
+          210 IT Support                                       1700
+          220 NOC                                              1700
+
+DEPARTMENT_ID DEPARTMENT_NAME                MANAGER_ID LOCATION_ID
+------------- ------------------------------ ---------- -----------
+          230 IT Helpdesk                                      1700
+          240 Government Sales                                 1700
+          250 Retail Sales                                     1700
+          260 Recruiting                                       1700
+          270 Payroll                                          1700
+
+27 filas seleccionadas.
+
+SQL> SET PAGES 50;
+SQL> SELECT * FROM DEPARTMENTS;
+
+DEPARTMENT_ID DEPARTMENT_NAME                MANAGER_ID LOCATION_ID
+------------- ------------------------------ ---------- -----------
+           10 Administration                        200        1700
+           20 Marketing                             201        1800
+           30 Purchasing                            114        1700
+           40 Human Resources                       203        2400
+           50 Shipping                              121        1500
+           60 IT                                    103        1400
+           70 Public Relations                      204        2700
+           80 Sales                                 145        2500
+           90 Executive                             100        1700
+          100 Finance                               108        1700
+          110 Accounting                            205        1700
+          120 Treasury                                         1700
+          130 Corporate Tax                                    1700
+          140 Control And Credit                               1700
+          150 Shareholder Services                             1700
+          160 Benefits                                         1700
+          170 Manufacturing                                    1700
+          180 Construction                                     1700
+          190 Contracting                                      1700
+          200 Operations                                       1700
+          210 IT Support                                       1700
+          220 NOC                                              1700
+          230 IT Helpdesk                                      1700
+          240 Government Sales                                 1700
+          250 Retail Sales                                     1700
+          260 Recruiting                                       1700
+          270 Payroll                                          1700
+
+27 filas seleccionadas.
+
+-------BLOQUEAR EL USUARIO HR---------
+
+SQL> ALTER USER HR ACCOUNT LOCK;
+
+Usuario modificado.
+
+SQL>

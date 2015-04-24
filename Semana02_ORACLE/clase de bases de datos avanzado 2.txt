@@ -1,0 +1,84 @@
+SQL Plus.
+Es una herramienta de linea de comandos de pantalla oscura que permite realizar consultas SQL. Al hacer clic nos pedirá autenticarnos, usuario y contraseña, en el caso de cibertec, el usuario es system y su contraseña es cibertec. Normalmente el usuario por default es "system" y su contraseña es "system".
+
+Podemos conectarnos mediante sql plus al servidor escribiendo el comando "connect", nos pedirá el usuario y contraseña. El usuario es el mismo "system" y "cibertec". Tmabien hay un usuario "scott" y password "tiger".
+
+Otra forma es utilizar "Ejecutar" y escribir SQLPLUS scott/tiger. Eso hará que se conecte automáticamente a Oracle, seleccionando el usuario especificado.
+
+MODIFICANDO CARACTERÍSTICAS ESPECIALES DEL EDITOR
+1. Seleccionamos cierta cantidad de registros de una tabla específica, especificando también que el ancho de cada campo sea de 200 puntos para que así sea pueda visualizar mejor la información.
+	SET LINESIZE 200;
+	SELECT * FROM emp;
+
+	CONFIGURAR TAMAÑO DE FILAS:
+	SET PAGESIZE 250;
+	SELECT * FROM emp;
+	
+
+EXTRAYENDO CONSULTAS GUARDADAS EN UN ARCHIVO DE TEXTO:
+Podemos guardar consultas en archivos de textos, los cuales se pueden ejecutar desde la misma consulta de SQLPLUS. Por ejemplo creamos el archivo "comandos.txt" dentro de la carpeta DATA en la unidad C (C:/DATA/comandos.txt). Luego en la consola de SQLPLUS escribimos @C:/DATA/comandos.txt y automáticamente se ejecutarán los comandos escritos en ese archivo de texto.
+
+Podemos editar ese archivo escribiendo EDIT C:/DATA/comandos.txt
+
+EL COMANDO SPOOL:
+Permite almacenar en archivos de texto los resultados de una consulta hecha en SQLPLUS.
+
+Para empezar, debemos crear un archivo en cierto lugar (Ej. C:/DATA/SESION02.TXT) y ejecutas: 
+
+1. SPOOL C:/DATA/SESION02.TXT
+2. Hacemos diversas consultas como: SELECT * FROM EMP; SELECT * FROM BONUS; ETC.
+3. Cerramos/Apagamos el SPOOL.
+
+COMO CREAR NUEVOS SCHEMAS.
+--------------------------
+SQL> CONNECT SYSTEM/cibertec
+
+PRIMERO: Creamos el usuario:
+
+SQL> CREATE USER USER1 IDENTIFIED BY Hola123
+2	DEFAULT TABLESPACE USERS
+3 	TEMPORARY TABLESPACE TEMP
+4	PROFILE DEFAULT;
+
+Usuario creado
+
+SEGUNDO: Asignando privilegios: Desbloquearlo.
+nos conectamos con el usuario system/cibertec y luego escribimos:
+GRANT CONNECT, RESOURCE TO user1;
+ALTER USER user1 ACCOUNT UNLOCK;
+
+
+Ingresando a Oracle:
+1. Abrimos el programa, y aparece una ventana que en la parte derecha dice conexiones, hacemos clic derecho, nueva conexion. Ponemos un nombre a nuestra conexion, ponemos un usuario y una contraseña. En Rol elegimos "Default", en "Tipo de conexion", elegimos TNS, alias de red: Cibertec. Hacemos clic en probar y luego en conectar.
+
+2. Cuando haya cargado la nueva conexión podremos desplegar su información en el signo +. En la parte central podemos escribir las consultas SQL que queramos y luego presionar la tecla F9 (puede ser f5 también, pero F9 muestra los encabezados mejor decorados y listos para ordenarlos en un orden específico.
+
+CONSULTAS:
+Seleccionar todos los usuarios cuyos nombres tengan la letra L como segundo caracter.
+select * from emp where ename like '_L%';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
