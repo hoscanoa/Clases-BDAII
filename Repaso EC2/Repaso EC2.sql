@@ -1,3 +1,107 @@
+
+/*
+NO_DTA_FOUND
+TOO_MANY_ROWS
+INVALID_CURSOR
+ZERO_DIVIDE
+DUP_VAL_ON_INDEX
+INVALID_NUMBER
+
+
+--------------------------------
+DECLARE
+  v_error1   EXCEPTION;
+  v_error2   EXCEPTION;
+BEGIN
+   RAISE v_error1;
+   ……
+   RAISE v_error2;
+   ….
+EXCEPTION
+   WHEN v_error1 THEN
+       …..
+  WHEN v_error2 THEN
+       …..
+  WHEN OTHERS THEN
+     dbms_output.put_line( SQLCODE || SQLERRM);
+END;
+
+
+SQLCODE
+0 --------> No se encontro error
+1 --------> Excepción definida por el usuario
++100 -----> Excepcion NO_DATA_FOUND
+Negativo -> Otro número de error del Sevidor
+
+
+SET serveroutput ON;
+DECLARE
+  err_num NUMBER;
+  err_msg VARCHAR2(255);
+  result  NUMBER;
+BEGIN
+  SELECT 1/0 INTO result 
+  FROM DUAL;
+EXCEPTION  
+WHEN OTHERS THEN
+  err_num := SQLCODE;
+  err_msg := SQLERRM;
+  DBMS_OUTPUT.put_line('Error:'||TO_CHAR(err_num));
+  DBMS_OUTPUT.put_line(err_msg);
+END;
+
+
+SET serveroutput ON;
+DECLARE
+ v_result  NUMBER;
+ v_error1   EXCEPTION;
+ PRAGMA EXCEPTION_INIT(v_error1,-1400);
+BEGIN
+  INSERT INTO DEPT (deptno) VALUES (NULL);
+EXCEPTION
+ WHEN v_error1 THEN
+   DBMS_OUTPUT.put_line('ERR:'||SQLERRM);
+END;
+
+RAISE_APPLICATION_ERROR (num_error, mje_error);
+Donde:
+Num_error: número comprendido entre -20000 y -20999
+Mje_error: mensaje de error personalizado a mostrar.
+
+SET serveroutput ON;
+Declare
+ numero number;
+Begin
+  numero:= 12/0;
+  DBMS_OUTPUT.put_line('RESULTADO:'||TO_CHAR(numero));
+Exception
+  when ZERO_DIVIDE then
+     RAISE_APPLICATION_ERROR(-20001,'Ud. hizo una división entre cero!!!');
+End;
+
+SET serveroutput ON;
+DECLARE
+	xemp  emp.empno%TYPE;
+  	xename  emp.ename%TYPE;
+BEGIN
+ xemp:=7369;
+  SELECT empno ,ename
+	  INTO xemp,xename
+	  FROM emp where empno= xemp;
+    DBMS_OUTPUT.put_line('Codigo: '|| xemp);
+    DBMS_OUTPUT.put_line('Nombre: '|| xename);
+EXCEPTION
+	WHEN NO_DATA_FOUND THEN
+	   RAISE_APPLICATION_ERROR(-20099,'NO SE ENCONTRO NINGUN REGISTROS!!!');
+END;
+
+*/
+
+
+
+
+
+
 /*
 1.	En un bloque PL/SQL, realice la búsqueda con la inicial del nombre del 
 cliente y contabilice los registros encontrados. Usando excepciones definidas 
