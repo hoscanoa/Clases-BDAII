@@ -107,6 +107,7 @@ BEGIN
       V_FILAS:=V_FILAS+1;
       DBMS_OUTPUT.PUT_LINE(V_COD_CLI||' - '||V_NOMBRES);
     END LOOP;
+    CLOSE CU;
     DBMS_OUTPUT.PUT_LINE('NUMERO DE CLIENTES: '||V_FILAS);
   END;
 END;
@@ -116,18 +117,35 @@ END;
 4.	Elaborar un bloque PL/SQL que permita recuperar la suma(Precio x cantidad) 
 de las Boletas emitidas de un determinado cliente, Deberá mostrar los siguientes
 mensajes: 
-
 Si la suma total es Cero: El cliente no ha realizado ninguna Boleta.
 Si La suma es <=100 mostrar: Ha registrado  un monto considerado, continúe 
 trabajando. 
 Caso contrario: Ha registrado excelentes Ventas, Muy Bien!!!
 */
 
-
-
-
-
-
+CLEAR SCREEN
+SET serveroutput ON;
+DECLARE
+  V_SUMA DECIMAL(7,2);
+  V_COD_CLI BOLETA.COD_CLI%TYPE;
+  V_MENSAJE VARCHAR2(140);
+BEGIN
+  V_COD_CLI:='CL0014';
+  V_SUMA:=0;
+  SELECT SUM(DETALLEBOLETA.CANTIDAD*DETALLEBOLETA.PRECIOVENTA) INTO V_SUMA 
+  FROM
+  DETALLEBOLETA INNER JOIN BOLETA ON
+  DETALLEBOLETA.COD_BOL=BOLETA.COD_BOL
+  WHERE BOLETA.COD_CLI=V_COD_CLI;
+  IF V_SUMA IS NULL OR V_SUMA=0 THEN
+    V_MENSAJE:='El cliente no ha realizado ninguna Boleta';
+  ELSIF V_SUMA<=700 THEN
+    V_MENSAJE:='Ha registrado un monto considerado, continúe trabajando.';
+  ELSE
+    V_MENSAJE:='Ha registrado excelentes Ventas, Muy Bien!!!';
+  END IF;
+  DBMS_OUTPUT.PUT_LINE(V_MENSAJE);
+END;
 
 /*
 5.	En un bloque PL/SQL, realice una inserción de registros a la tabla DISTRITO.
@@ -135,14 +153,21 @@ Usando excepciones predefinidas envíe los siguientes mensajes  ‘Ya existe un
 distrito con el código ingresado’ o ‘Error desconocido’. Utilice los gestores 
 DUP_VAL_ON_INDEX   y OTHERS.
 */
-
-
-
-
-
-
-
-
+CLEAR SCREEN
+SET serveroutput ON;
+DECLARE
+  V_COD_DIST DISTRITO.COD_DIST%TYPE;
+  V_DESCRIP_DIST DISTRITO.DESCRIP_DIST%TYPE;
+BEGIN
+  V_COD_DIST:='L08';
+  V_DESCRIP_DIST:='LOS OLIVOS';
+  INSERT INTO DISTRITO VALUES(V_COD_DIST, V_DESCRIP_DIST);
+EXCEPTION
+  WHEN DUP_VAL_ON_INDEX THEN
+    DBMS_OUTPUT.PUT_LINE('Ya existe un distrito con el código ingresado');
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('Error desconocido');
+END;
 
 /*
 6.	Elaborar un bloque PL/SQL que visualice en consola (buffer) el Código del 
@@ -150,9 +175,30 @@ cliente, el nombre de cliente, la primera y última letra del nombre del cliente,
 y la cantidad de facturas emitidas por cliente ordenados de mayor a menor de 
 acuerdo a la cantidad obtenida. (utilizar cursores)
 */
-
-
-
-
-
-
+CLEAR SCREEN
+SET serveroutput ON;
+DECLARE
+  V_COD_CLI CLIENTE.COD_CLI%TYPE;
+  V_NOMBRES CLIENTE.NOMBRES%TYPE;
+  V_NUMERO INTEGER;
+BEGIN
+  DECLARE 
+  CURSOR CU IS
+  SELECT 
+  CLIENTE.COD_CLI,
+  CLIENTE.NOMBRES, 
+  COUNT(BOLETA.COD_CLI) AS NUMERO
+  FROM 
+  BOLETA INNER JOIN CLIENTE ON BOLETA.COD_CLI=CLIENTE.COD_CLI
+  GROUP BY CLIENTE.COD_CLI, CLIENTE.NOMBRES
+  ORDER BY NUMERO DESC;
+  BEGIN
+  OPEN CU;
+    LOOP
+      FETCH CU INTO V_COD_CLI, V_NOMBRES, V_NUMERO;
+      EXIT WHEN CU%NOTFOUND;
+      DBMS_OUTPUT.PUT_LINE(V_COD_CLI||' - '||V_NOMBRES||' - '||SUBSTR(V_NOMBRES,1,1)||' - '||SUBSTR(V_NOMBRES,LENGTH(V_NOMBRES),1)||' - '||V_NUMERO);
+    END LOOP;
+  CLOSE CU;
+  END;
+END;
