@@ -399,4 +399,117 @@ insertar (:NEW.sal) más el salario total del departamento al que pertenece dicho
 superior a 10.0000.
 – Cuando se trate de una modificación (IF UPDATING...), al salario total del departamento se le
 sumará el :NEW.sal y se le restará el :OLD.sal
+
+*/
+
+/*
+Ejercicio 1.
+Crear un trigger para impedir que se aumente el salario de un empleado en más de un 20%.
+* Actualize las tuplas necesarias para comprobar que funciona el trigger
+CREATE OR REPLACE TRIGGER aumentoSalario
+BEFORE UPDATE OF sal ON emp
+FOR EACH ROW
+BEGIN
+IF :NEW.sal > :OLD.sal*1.20
+THEN raise_application_error
+(-20600,:new.Sal||'no se puede aumentar el salario más de un 20%');
+END IF;
+END;
+Verificar trigger:
+update emp
+set sal=sal*1.30
+where empno='7369';
+*/
+
+/*
+Ejercicio 2.
+Crear un trigger sobre la tabla EMP para que no se permita que un empleado sea jefe (MGR) de más de cinco empleados.
+* Inserte las tuplas necesarias para comprobar que funciona el trigger
+CREATE OR REPLACE TRIGGER jefes
+BEFORE
+INSERT ON emp
+FOR EACH ROW
+DECLARE
+supervisa INTEGER;
+BEGIN
+SELECT count(*) INTO supervisa
+FROM emp WHERE mgr = :new.mgr;
+IF (supervisa > 4)
+THEN raise_application_error
+(-20600,:new.mgr||'no se puede supervisar más de 5');
+END IF;
+END;
+
+SELECT * FROM EMP
+WHERE MGR='7698';
+
+INSERT INTO EMP VALUES
+(7369, 'SMITH', 'CLERK', 7698,
+TO_DATE('17-DEC-1980', 'DD-MON-YYYY'), 800, NULL, 20);
+*/
+
+/*
+Ejercicio 3.
+Crear una tabla empleados_baja con la siguiente estructura:
+
+CREATE TABLE empleados_baja
+(EMPNO NUMBER(4) NOT NULL,
+ENAME VARCHAR2(10),
+JOB VARCHAR2(9),
+MGR NUMBER(4),
+HIREDATE DATE,
+SAL NUMBER(7, 2),
+COMM NUMBER(7, 2),
+DEPTNO NUMBER(2),
+usuario varchar2(15),
+fecha date );
+
+• Crear un trigger que inserte una fila en la tabla empleados_baja cuando se borre una fila en la tabla empleados.
+• Los datos que se insertan son los correspondientes al empleado que se da de baja en la tabla empleados, salvo en las columnas usuario y fecha se grabarán las variables del sistema USER y SYSDATE que almacenan el usuario y fecha actual.
+• El comando que dispara el trigger es AFTER DELETE.
+
+CREATE OR REPLACE TRIGGER bajas
+AFTER DELETE ON emp
+FOR EACH ROW
+BEGIN
+INSERT INTO empleados_baja VALUES (:old.empno,:old.ename,:old.job,:old.mgr,:old.hiredate,
+:old.sal,:old.comm,:old.deptno, USER, SYSDATE);
+END;
+*/
+
+
+/*
+Ejercicio 4.
+Crear un trigger para impedir que el salario total por departamento (suma de los salarios de los empleados por departamento) sea superior a 10.000.
+• Ayuda:
+– Será necesario distinguir si se trata de una modificación o de una inserción.
+– Cuando se trate de una inserción (IF INSERTING...) se comprobará que el salario del empleado a insertar (:NEW.sal) más el salario total del departamento al que pertenece dicho empleado no es superior a 10.0000.
+– Cuando se trate de una modificación (IF UPDATING...), al salario total del departamento se le sumará el :NEW.sal y se le restará el :OLD.sal.
+
+CREATE OR REPLACE TRIGGER TGR_SALARIO_TOTAL
+BEFORE INSERT OR UPDATE
+ON EMP
+FOR EACH ROW
+DECLARE
+CURSOR CUR IS
+SELECT DEPTNO ,SUM(SAL)FROM EMP GROUP BY DEPTNO;
+V_DEPTNO EMP.DEPTNO%TYPE;
+V_SUMA EMP.SAL%TYPE;
+BEGIN
+OPEN CUR;
+FETCH CUR INTO V_DEPTNO,V_SUMA;
+WHILE CUR%FOUND LOOP
+IF INSERTING THEN
+IF(V_SUMA + :NEW.SAL > 10000 AND :NEW.DEPTNO = V_DEPTNO ) THEN
+RAISE_APPLICATION_ERROR(-20600,:NEW.SAL||' ES SUPERIOR A 10000');
+END IF;
+ELSIF UPDATING THEN
+IF((V_SUMA + :NEW.SAL) - :OLD.SAL > 10000 AND :NEW.DEPTNO = V_DEPTNO) THEN
+RAISE_APPLICATION_ERROR(-20600,:NEW.SAL||' ES SUPERIOR A 10000');
+END IF;
+END IF;
+FETCH CUR INTO V_DEPTNO,V_SUMA;
+END LOOP;
+CLOSE CUR;
+END;
 */
